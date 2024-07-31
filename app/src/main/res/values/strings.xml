@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">Orgs</string>
+    <string name="title_activity_formulario_produto">FormularioProdutoActivity</string>
+    <string name="nome">Nome</string>
+    <string name="descricao">Descrição</string>
+    <string name="valor">Valor</string>
+    <string name="salvar">Salvar</string>
+    <string name="adicionar">Adicionar</string>
+    <string name="imagem_do_produto">imagem do produto</string>
+    <string name="carregar_imagem">Carregar Imagem</string>
+    <string name="url_da_imagem">URL da imagem</string>
+    <string name="tools_preco">R$ 0,00</string>
+</resources>
