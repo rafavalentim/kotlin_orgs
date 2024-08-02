@@ -6,7 +6,7 @@ import androidx.room.Query
 import com.br.orgs.ui.recyclerview.adapter.model.Produto
 
 @Dao
-interface produtoDao {
+interface ProdutoDao {
 
     @Query("SELECT * FROM Produto")
     fun buscaTodos() : List<Produto>
