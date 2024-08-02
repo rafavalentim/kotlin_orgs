@@ -10,7 +10,7 @@ import com.br.orgs.database.converters.Converters
 import com.br.orgs.database.dao.ProdutoDao
 import com.br.orgs.ui.recyclerview.adapter.model.Produto
 
-@Database(entities = [Produto::class], version = 1)
+@Database(entities = [Produto::class], version = 1, exportSchema = true)
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
 
