@@ -3,19 +3,14 @@ package com.br.orgs.ui.activity
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.room.Room
-import com.br.orgs.dao.ProdutosDao
 import com.br.orgs.database.AppDatabase
-import com.br.orgs.database.dao.ProdutoDao
 import com.br.orgs.databinding.ActivityListaProdutosBinding
 import com.br.orgs.ui.recyclerview.adapter.ListaProdutosAdapter
-import com.br.orgs.ui.recyclerview.adapter.model.Produto
-import java.math.BigDecimal
 
 class ListaProdutosActivity : AppCompatActivity() {
 
-    private val dao = ProdutosDao()
-    private val adapter = ListaProdutosAdapter(context = this, produtos = dao.buscaTodos())
+
+    private val adapter = ListaProdutosAdapter(context = this)
     private val binding by lazy {
         ActivityListaProdutosBinding.inflate(layoutInflater) //Usando ViewBinding
     }
@@ -26,12 +21,6 @@ class ListaProdutosActivity : AppCompatActivity() {
 
         configuraRecyclerView()
         configuraFloatActionButton()
-
-        //Criando e definindo o banco de dados.
-        val db = AppDatabase.instance(this)
-        val produtosDao = db.produtoDao()
-
-        adapter.atualiza(produtosDao.buscaTodos())
     }
 
     override fun onResume() {

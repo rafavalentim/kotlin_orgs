@@ -7,7 +7,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.br.orgs.dao.DetalheProdutoDao
 import com.br.orgs.databinding.ProdutoItemBinding
 import com.br.orgs.extensions.tentaCarregarImagem
 import com.br.orgs.model.DetalheProduto
@@ -20,7 +19,7 @@ import java.util.Locale
 class ListaProdutosAdapter(
 
     private val context : Context,
-    produtos : List<Produto>
+    produtos : List<Produto> = emptyList()
 
 ) : RecyclerView.Adapter<ListaProdutosAdapter.ViewHolder>() {
 

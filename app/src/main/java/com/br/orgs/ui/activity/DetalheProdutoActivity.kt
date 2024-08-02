@@ -4,14 +4,13 @@ import android.os.Build
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import com.br.orgs.dao.DetalheProdutoDao
 import com.br.orgs.databinding.ActivityDetalheProdutoBinding
 import com.br.orgs.extensions.tentaCarregarImagem
 import com.br.orgs.model.DetalheProduto
 
 class DetalheProdutoActivity : AppCompatActivity() {
 
-    private val dao = DetalheProdutoDao
+    //private val dao = DetalheProdutoDao
 
     private val binding by lazy {
         ActivityDetalheProdutoBinding.inflate(layoutInflater)
