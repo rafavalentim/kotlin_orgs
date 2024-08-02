@@ -28,29 +28,20 @@ class ListaProdutosActivity : AppCompatActivity() {
         configuraFloatActionButton()
 
         //Criando e definindo o banco de dados.
-        val db = Room.databaseBuilder(
-            this,
-            AppDatabase::class.java,
-            "orgs.db"
-        ).allowMainThreadQueries() //Não é boa prática. Está aqui para fins didáticos.
-            .build()
-
+        val db = AppDatabase.instance(this)
         val produtosDao = db.produtoDao()
-
-//        produtosDao.salva(
-//            Produto(
-//                nome = "Toranja",
-//                descricao = "Produto fresco e livre de agrotóxicos.",
-//                valor = BigDecimal(10.0)
-//            )
-//        )
 
         adapter.atualiza(produtosDao.buscaTodos())
     }
 
     override fun onResume() {
         super.onResume()
-        //adapter.atualiza(dao.buscaTodos())
+
+        //Criando e definindo o banco de dados.
+        val db = AppDatabase.instance(this)
+        val produtosDao = db.produtoDao()
+
+        adapter.atualiza(produtosDao.buscaTodos())
     }
 
     private fun configuraFloatActionButton() {

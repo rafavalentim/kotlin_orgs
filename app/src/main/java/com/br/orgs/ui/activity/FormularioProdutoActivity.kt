@@ -3,13 +3,9 @@ package com.br.orgs.ui.activity
 import android.os.Bundle
 
 import androidx.activity.enableEdgeToEdge
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import coil.load
-import com.br.orgs.R
-import com.br.orgs.dao.ProdutosDao
+import com.br.orgs.database.AppDatabase
 import com.br.orgs.databinding.ActivityFormularioProdutoBinding
-import com.br.orgs.databinding.FormularioAlertImagemBinding
 import com.br.orgs.extensions.tentaCarregarImagem
 import com.br.orgs.ui.dialog.FormularioImagemDialog
 import com.br.orgs.ui.recyclerview.adapter.model.Produto
@@ -17,18 +13,16 @@ import java.math.BigDecimal
 
 class FormularioProdutoActivity : AppCompatActivity() {
 
-    private val dao = ProdutosDao()
-
     private val binding by lazy { ActivityFormularioProdutoBinding.inflate(layoutInflater) }
 
     private var url: String? = null
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
         setContentView(binding.root)
+
         title = "Cadastrar Produto"
         configuraBotaoSalvar()
         binding.activityFormularioProdutoImagem.setOnClickListener {
@@ -47,8 +41,12 @@ class FormularioProdutoActivity : AppCompatActivity() {
 
         botaoSalvar.setOnClickListener {
 
+            //Criando e definindo o banco de dados.
+            val db = AppDatabase.instance(this)
+            val dao = db.produtoDao()
+
             val produtoNovo = criarProduto()
-            dao.adicionar(produtoNovo)
+            dao.salva( produtoNovo )
             finish() //volta para a activity anterior.
         }
     }
