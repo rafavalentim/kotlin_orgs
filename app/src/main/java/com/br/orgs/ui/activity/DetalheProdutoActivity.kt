@@ -21,10 +21,15 @@ private const val TAG = "DetalhesProduto"
 
 class DetalheProdutoActivity : AppCompatActivity() {
 
-    private lateinit var produto: Produto
+    private var produtoId: Long? = null
+    private var produto: Produto? = null
 
     private val binding by lazy {
         ActivityDetalheProdutoBinding.inflate(layoutInflater)
+    }
+
+    val produtoDao by lazy{
+        AppDatabase.instance(this).produtoDao()
     }
 
 
@@ -66,12 +71,9 @@ class DetalheProdutoActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (::produto.isInitialized) {
-            val db = AppDatabase.instance(this)
-            val produtoDao = db.produtoDao()
             when(item.itemId){
                 R.id.menu_detalhe_produto_remover -> {
-                    produtoDao.remove(produto)
+                    produto?.let { produtoDao.remove(it) }
                     finish()
                 }
                 R.id.menu_detalhe_produto_editar -> {
@@ -81,14 +83,14 @@ class DetalheProdutoActivity : AppCompatActivity() {
                     }
                 }
             }
-        }
+
         return super.onOptionsItemSelected(item)
     }
 
     private fun tentarCarregarProduto() {
         intent.getParcelableExtra<Produto>(CHAVE_PRODUTO)?.let { produtoCarregado ->
-            produto = produtoCarregado
-            preencheCampos(produtoCarregado)
+            produtoId = produtoCarregado.id
+            //preencheCampos(produtoCarregado)
         } ?: finish()
     }
 
@@ -104,6 +106,17 @@ class DetalheProdutoActivity : AppCompatActivity() {
     private fun formataParaMoedaBrasileira(valor: BigDecimal): String? {
         val formatadorFinanceiro = NumberFormat.getCurrencyInstance(Locale("pt", "BR"))
         return formatadorFinanceiro.format(valor)
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        produtoId?.let { id ->
+            produto = produtoDao.buscaPorId(id)
+        }
+        produto?.let {
+            preencheCampos(it)
+        }?: finish()
     }
 
 }
