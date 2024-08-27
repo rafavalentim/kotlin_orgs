@@ -47,5 +47,18 @@ class ListaProdutosActivity : AppCompatActivity() {
 
         //Adicionando os dados do formulário no RecyclerView
         recyclerView.adapter = adapter
+
+        adapter.quandoClicaNoItem = {
+            val intent = Intent(
+                this,
+                DetalheProdutoActivity::class.java
+            ).apply {
+                putExtra(CHAVE_PRODUTO, it)
+            }
+            startActivity(intent)
+        }
+
+
+
     }
 }

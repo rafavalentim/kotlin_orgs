@@ -17,24 +17,33 @@ import java.text.NumberFormat
 import java.util.Locale
 
 class ListaProdutosAdapter(
-
     private val context : Context,
-    produtos : List<Produto> = emptyList()
-
+    produtos : List<Produto> = emptyList(),
+    var quandoClicaNoItem: (produto: Produto) -> Unit = {}
 ) : RecyclerView.Adapter<ListaProdutosAdapter.ViewHolder>() {
 
     private val produtos = produtos.toMutableList()
 
-
-    class ViewHolder(private val binding: ProdutoItemBinding) :
+    inner class ViewHolder(private val binding: ProdutoItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
+        private lateinit var produto: Produto
+
+        init {
+            itemView.setOnClickListener {
+                if (::produto.isInitialized) {
+                    quandoClicaNoItem(produto)
+                }
+            }
+        }
+
         fun vincula(produto: Produto) {
+
+            this.produto = produto
 
             val nome = binding.nome
             val descricao = binding.descricao
             val valor =   binding.valor
-
 
             nome.text = produto.nome
             descricao.text = produto.descricao
@@ -52,7 +61,7 @@ class ListaProdutosAdapter(
 
             binding.imageView.tentaCarregarImagem(produto.imagem)
 
-            configuraCliqueCardView(nome.text.toString(), descricao.text.toString(), valor.text.toString(), produto.imagem)
+            //configuraCliqueCardView(nome.text.toString(), descricao.text.toString(), valor.text.toString(), produto.imagem)
 
         }
 

@@ -1,6 +1,7 @@
 package com.br.orgs.database.dao
 
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import com.br.orgs.ui.recyclerview.adapter.model.Produto
@@ -13,5 +14,8 @@ interface ProdutoDao {
 
     @Insert
     fun salva(vararg produto: Produto)
+
+    @Delete
+    fun remove(produto: Produto)
 
 }
