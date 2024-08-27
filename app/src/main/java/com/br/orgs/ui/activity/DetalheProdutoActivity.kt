@@ -17,11 +17,9 @@ import java.math.BigDecimal
 import java.text.NumberFormat
 import java.util.Locale
 
-private const val TAG = "DetalhesProduto"
-
 class DetalheProdutoActivity : AppCompatActivity() {
 
-    private var produtoId: Long? = null
+    private var produtoId: Long = 0L
     private var produto: Produto? = null
 
     private val binding by lazy {
@@ -88,10 +86,7 @@ class DetalheProdutoActivity : AppCompatActivity() {
     }
 
     private fun tentarCarregarProduto() {
-        intent.getParcelableExtra<Produto>(CHAVE_PRODUTO)?.let { produtoCarregado ->
-            produtoId = produtoCarregado.id
-            //preencheCampos(produtoCarregado)
-        } ?: finish()
+        produtoId = intent.getLongExtra(CHAVE_PRODUTO_ID, 0L)
     }
 
     private fun preencheCampos(produtoCarregado: Produto) {
@@ -110,13 +105,14 @@ class DetalheProdutoActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
+        buscaProduto()
+    }
 
-        produtoId?.let { id ->
-            produto = produtoDao.buscaPorId(id)
-        }
+    private fun buscaProduto() {
+        produto = produtoDao.buscaPorId(produtoId)
         produto?.let {
             preencheCampos(it)
-        }?: finish()
+        } ?: finish()
     }
 
 }
