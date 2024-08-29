@@ -13,6 +13,13 @@ import com.br.orgs.databinding.ActivityDetalheProdutoBinding
 import com.br.orgs.extensions.tentaCarregarImagem
 import com.br.orgs.model.DetalheProduto
 import com.br.orgs.ui.recyclerview.adapter.model.Produto
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Dispatchers.Main
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import okhttp3.Dispatcher
 import java.math.BigDecimal
 import java.text.NumberFormat
 import java.util.Locale
@@ -29,6 +36,8 @@ class DetalheProdutoActivity : AppCompatActivity() {
     val produtoDao by lazy{
         AppDatabase.instance(this).produtoDao()
     }
+
+    private val scope = CoroutineScope(Dispatchers.IO)
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -71,8 +80,12 @@ class DetalheProdutoActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
             when(item.itemId){
                 R.id.menu_detalhe_produto_remover -> {
-                    produto?.let { produtoDao.remove(it) }
-                    finish()
+                    //Usando Coroutines
+                    scope.launch {
+                        produto?.let { produtoDao.remove(it) }
+                        finish()
+                    }
+
                 }
                 R.id.menu_detalhe_produto_editar -> {
                     Intent(this, FormularioProdutoActivity::class.java).apply {
@@ -109,10 +122,15 @@ class DetalheProdutoActivity : AppCompatActivity() {
     }
 
     private fun buscaProduto() {
-        produto = produtoDao.buscaPorId(produtoId)
-        produto?.let {
-            preencheCampos(it)
-        } ?: finish()
+        //Usando o Coroutines.
+        scope.launch {
+            produto = produtoDao.buscaPorId(produtoId)
+            //Alterando o context para garantir que o touch será na thread main.
+            withContext(Main){
+                produto?.let {
+                    preencheCampos(it)
+                } ?: finish()
+            }
+        }
     }
-
 }

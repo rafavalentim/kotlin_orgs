@@ -10,6 +10,11 @@ import com.br.orgs.databinding.ActivityFormularioProdutoBinding
 import com.br.orgs.extensions.tentaCarregarImagem
 import com.br.orgs.ui.dialog.FormularioImagemDialog
 import com.br.orgs.ui.recyclerview.adapter.model.Produto
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Dispatchers.Main
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.math.BigDecimal
 
 class FormularioProdutoActivity : AppCompatActivity() {
@@ -24,6 +29,7 @@ class FormularioProdutoActivity : AppCompatActivity() {
         val db = AppDatabase.instance(this)
         db.produtoDao()
     }
+    private val scope = CoroutineScope(Dispatchers.IO)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,13 +62,18 @@ class FormularioProdutoActivity : AppCompatActivity() {
     }
 
     private fun tentaBuscarProduto() {
-        produtoDao.buscaPorId(produtoId)?.let {
-            preencheCampos(it)
+        //Implementando coroutines nas operações de banco de dados.
+        scope.launch {
+            produtoDao.buscaPorId(produtoId)?.let {
+                withContext(Main){
+                    title = "Alterar Produto"
+                    preencheCampos(it)
+                }
+            }
         }
     }
 
     private fun preencheCampos(produto: Produto) {
-        title = "Alterar Produto"
         url = produto.imagem
         binding.activityFormularioProdutoImagem.tentaCarregarImagem(produto.imagem)
         binding.activityFormularioProdutoNome.setText(produto.nome)
@@ -77,14 +88,11 @@ class FormularioProdutoActivity : AppCompatActivity() {
 
             val produtoNovo = criarProduto()
 
-//            if(produtoId > 0){
-//                produtoDao.altera(produtoNovo)
-//            }else{
-//                produtoDao.salva(produtoNovo)
-//            }
-            produtoDao.salva(produtoNovo)
+            scope.launch {
+                produtoDao.salva(produtoNovo)
+                finish() //volta para a activity anterior.
+            }
 
-            finish() //volta para a activity anterior.
         }
     }
 

@@ -6,6 +6,11 @@ import androidx.appcompat.app.AppCompatActivity
 import com.br.orgs.database.AppDatabase
 import com.br.orgs.databinding.ActivityListaProdutosBinding
 import com.br.orgs.ui.recyclerview.adapter.ListaProdutosAdapter
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class ListaProdutosActivity : AppCompatActivity() {
 
@@ -30,7 +35,16 @@ class ListaProdutosActivity : AppCompatActivity() {
         val db = AppDatabase.instance(this)
         val produtosDao = db.produtoDao()
 
-        adapter.atualiza(produtosDao.buscaTodos())
+        //Criando uma coroutine.
+        val scope = MainScope()
+        scope.launch {
+            val produtos = withContext(Dispatchers.IO){
+                produtosDao.buscaTodos()
+
+            } //Dispatcher IO diz que o sistema será executado em uma thread nova.
+            adapter.atualiza(produtos)
+        }
+
     }
 
     private fun configuraFloatActionButton() {

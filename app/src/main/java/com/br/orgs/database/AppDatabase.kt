@@ -24,7 +24,7 @@ abstract class AppDatabase : RoomDatabase() {
                 context,
                 AppDatabase::class.java,
                 "orgs.db"
-            ).allowMainThreadQueries() //Não é boa prática. Está aqui para fins didáticos.
+            )//.allowMainThreadQueries() //Não é boa prática. Está aqui para fins didáticos.
              .build()
         }
     }
