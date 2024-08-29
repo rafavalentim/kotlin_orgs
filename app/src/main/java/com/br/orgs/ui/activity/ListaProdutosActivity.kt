@@ -2,13 +2,14 @@ package com.br.orgs.ui.activity
 
 import android.content.Intent
 import android.os.Bundle
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.br.orgs.database.AppDatabase
 import com.br.orgs.databinding.ActivityListaProdutosBinding
 import com.br.orgs.ui.recyclerview.adapter.ListaProdutosAdapter
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -31,20 +32,25 @@ class ListaProdutosActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
 
-        //Criando e definindo o banco de dados.
-        val db = AppDatabase.instance(this)
-        val produtosDao = db.produtoDao()
+            //Criando e definindo o banco de dados.
+            val db = AppDatabase.instance(this)
+            val produtosDao = db.produtoDao()
 
-        //Criando uma coroutine.
-        val scope = MainScope()
-        scope.launch {
-            val produtos = withContext(Dispatchers.IO){
-                produtosDao.buscaTodos()
+        //Usando o CoroutineExceptionHandler
+            val handler = CoroutineExceptionHandler{ coroutineContext, throwable ->
+                Toast.makeText(this@ListaProdutosActivity,"Ocorreu um problema", Toast.LENGTH_SHORT).show()
 
-            } //Dispatcher IO diz que o sistema será executado em uma thread nova.
-            adapter.atualiza(produtos)
-        }
+            }
 
+            //Criando uma coroutine.
+            val scope = MainScope()
+            scope.launch(handler) { //Usando o handler no lugar do try/catch.
+                //O Bloco de exceção deve estar dentro do esopo da coroutine.
+                    val produtos = withContext(Dispatchers.IO){
+                        produtosDao.buscaTodos()
+                    } //Dispatcher IO diz que o sistema será executado em uma thread nova.
+                    adapter.atualiza(produtos)
+            }
     }
 
     private fun configuraFloatActionButton() {
