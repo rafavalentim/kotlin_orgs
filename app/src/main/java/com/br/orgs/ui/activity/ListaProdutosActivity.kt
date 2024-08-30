@@ -66,7 +66,6 @@ class ListaProdutosActivity : AppCompatActivity() {
 //            }
 
             lifecycleScope.launch(/*handler*/) { //Usando o handler no lugar do try/catch.
-                //O Bloco de exceção deve estar dentro do esopo da coroutine.
                 val produtos = dao.buscaTodos()
                 adapter.atualiza(produtos)
             }
