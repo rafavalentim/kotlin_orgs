@@ -12,17 +12,17 @@ import com.br.orgs.ui.recyclerview.adapter.model.Produto
 interface ProdutoDao {
 
     @Query("SELECT * FROM Produto")
-    fun buscaTodos() : List<Produto>
+    suspend fun buscaTodos() : List<Produto>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE) //Esse código diz para atualizar caso já tenha
-    fun salva(vararg produto: Produto)               // o registro no banco de dados.
+    suspend fun salva(vararg produto: Produto)               // o registro no banco de dados.
 
     @Delete
-    fun remove(produto: Produto)
+    suspend fun remove(produto: Produto)
 
     @Update
-    fun altera(produto: Produto)
+    suspend fun altera(produto: Produto)
 
     @Query("SELECT * FROM Produto WHERE id = :id")
-    fun buscaPorId(id: Long) : Produto?
+    suspend fun buscaPorId(id: Long) : Produto?
 }
