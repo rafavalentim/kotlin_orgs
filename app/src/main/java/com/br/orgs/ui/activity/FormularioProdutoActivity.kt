@@ -4,6 +4,7 @@ import android.os.Bundle
 
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import com.br.orgs.database.AppDatabase
 import com.br.orgs.database.dao.ProdutoDao
 import com.br.orgs.databinding.ActivityFormularioProdutoBinding
@@ -29,7 +30,6 @@ class FormularioProdutoActivity : AppCompatActivity() {
         val db = AppDatabase.instance(this)
         db.produtoDao()
     }
-    private val scope = CoroutineScope(Dispatchers.IO)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -63,12 +63,10 @@ class FormularioProdutoActivity : AppCompatActivity() {
 
     private fun tentaBuscarProduto() {
         //Implementando coroutines nas operações de banco de dados.
-        scope.launch {
+        lifecycleScope.launch {
             produtoDao.buscaPorId(produtoId)?.let {
-                withContext(Main){
                     title = "Alterar Produto"
                     preencheCampos(it)
-                }
             }
         }
     }
@@ -88,7 +86,7 @@ class FormularioProdutoActivity : AppCompatActivity() {
 
             val produtoNovo = criarProduto()
 
-            scope.launch {
+            lifecycleScope.launch {
                 produtoDao.salva(produtoNovo)
                 finish() //volta para a activity anterior.
             }

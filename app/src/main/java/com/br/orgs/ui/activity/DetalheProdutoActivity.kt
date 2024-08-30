@@ -7,6 +7,7 @@ import android.view.Menu
 import android.view.MenuItem
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import com.br.orgs.R
 import com.br.orgs.database.AppDatabase
 import com.br.orgs.databinding.ActivityDetalheProdutoBinding
@@ -36,9 +37,6 @@ class DetalheProdutoActivity : AppCompatActivity() {
     val produtoDao by lazy{
         AppDatabase.instance(this).produtoDao()
     }
-
-    private val scope = CoroutineScope(Dispatchers.IO)
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -81,7 +79,7 @@ class DetalheProdutoActivity : AppCompatActivity() {
             when(item.itemId){
                 R.id.menu_detalhe_produto_remover -> {
                     //Usando Coroutines
-                    scope.launch {
+                    lifecycleScope.launch {
                         produto?.let { produtoDao.remove(it) }
                         finish()
                     }
@@ -123,14 +121,11 @@ class DetalheProdutoActivity : AppCompatActivity() {
 
     private fun buscaProduto() {
         //Usando o Coroutines.
-        scope.launch {
+        lifecycleScope.launch {
             produto = produtoDao.buscaPorId(produtoId)
-            //Alterando o context para garantir que o touch será na thread main.
-            withContext(Main){
                 produto?.let {
                     preencheCampos(it)
                 } ?: finish()
-            }
         }
     }
 }
