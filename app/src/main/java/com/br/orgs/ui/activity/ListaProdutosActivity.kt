@@ -3,22 +3,16 @@ package com.br.orgs.ui.activity
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.br.orgs.database.AppDatabase
-import com.br.orgs.database.dao.ProdutoDao
 import com.br.orgs.databinding.ActivityListaProdutosBinding
 import com.br.orgs.ui.recyclerview.adapter.ListaProdutosAdapter
-import com.br.orgs.ui.recyclerview.adapter.model.Produto
-import kotlinx.coroutines.CoroutineExceptionHandler
-import kotlinx.coroutines.CoroutineName
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+
 
 class ListaProdutosActivity : AppCompatActivity() {
 
@@ -43,6 +37,30 @@ class ListaProdutosActivity : AppCompatActivity() {
 
         configuraRecyclerView()
         configuraFloatActionButton()
+//
+//        val fluxoDeNumeros =  flow<Int> {
+//
+//            repeat(100){
+//                emit(1)
+//                delay(1000)
+//
+//            }
+//        }
+//
+//        lifecycleScope.launch {
+//            fluxoDeNumeros.collect{ numero ->
+//
+//                Log.i("ListaNumeros", "onCreate: $numero")
+//
+//            }
+//        }
+
+        lifecycleScope.launch(/*handler*/) { //Usando o handler no lugar do try/catch.
+            //Usando o Flow.
+            dao.buscaTodos().collect{produtos ->
+                adapter.atualiza(produtos)
+            }
+        }
     }
 
     override fun onResume() {
@@ -65,10 +83,7 @@ class ListaProdutosActivity : AppCompatActivity() {
 //                }
 //            }
 
-            lifecycleScope.launch(/*handler*/) { //Usando o handler no lugar do try/catch.
-                val produtos = dao.buscaTodos()
-                adapter.atualiza(produtos)
-            }
+
     }
 
 //    private suspend fun buscaTodosOsProdutos(): List<Produto> {

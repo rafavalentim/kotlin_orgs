@@ -122,10 +122,21 @@ class DetalheProdutoActivity : AppCompatActivity() {
     private fun buscaProduto() {
         //Usando o Coroutines.
         lifecycleScope.launch {
-            produto = produtoDao.buscaPorId(produtoId)
-                produto?.let {
-                    preencheCampos(it)
-                } ?: finish()
+
+            produtoDao.buscaPorId(produtoId).collect{ prod ->
+                let {
+                    title = "Alterar Produto"
+                    if (prod != null) {
+                        preencheCampos(prod)
+                    }
+                }
+            }
+            finish()
+
+//            produto = produtoDao.buscaPorId(produtoId)
+//                produto?.let {
+//                    preencheCampos(it)
+//                } ?: finish()
         }
     }
 }

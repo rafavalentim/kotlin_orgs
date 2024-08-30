@@ -18,14 +18,18 @@ abstract class AppDatabase : RoomDatabase() {
 
     //O companion transforma o método em estático.
     companion object {
+        @Volatile
+        private var db : AppDatabase? = null
         fun instance(context : Context) : AppDatabase{
             //Criando e definindo o banco de dados.
-           return Room.databaseBuilder(
+           return db ?: Room.databaseBuilder(
                 context,
                 AppDatabase::class.java,
                 "orgs.db"
-            )//.allowMainThreadQueries() //Não é boa prática. Está aqui para fins didáticos.
-             .build()
+            ).build()
+               .also {
+                   db = it
+               }
         }
     }
 }

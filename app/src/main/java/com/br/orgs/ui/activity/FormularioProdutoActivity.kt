@@ -64,10 +64,19 @@ class FormularioProdutoActivity : AppCompatActivity() {
     private fun tentaBuscarProduto() {
         //Implementando coroutines nas operações de banco de dados.
         lifecycleScope.launch {
-            produtoDao.buscaPorId(produtoId)?.let {
+            produtoDao.buscaPorId(produtoId).collect{ prod ->
+                let {
                     title = "Alterar Produto"
-                    preencheCampos(it)
+                    if (prod != null) {
+                        preencheCampos(prod)
+                    }
+                }
             }
+
+//            produtoDao.buscaPorId(produtoId)?.let {
+//                    title = "Alterar Produto"
+//                    preencheCampos(it)
+//            }
         }
     }
 
